@@ -9,8 +9,20 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   async function handleSignup() {
+
+    if (!name || !email || !password) {
+      alert("Please fill all fields");
+      return;
+    }
+
     try {
+
+      setLoading(true);
+
       const res = await api.post("/signup", {
         name,
         email,
@@ -20,56 +32,97 @@ function Signup() {
       alert(res.data.message);
 
       navigate("/login");
+
     } catch (err) {
+
       alert(err.response?.data?.message || "Signup failed");
+
+    } finally {
+
+      setLoading(false);
+
     }
   }
 
   return (
-    <div>
-      <h1>Signup</h1>
+    <div className="auth-container">
 
-      <input
-        type="text"
-        placeholder="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
+      <div className="auth-card">
 
-      <br />
-      <br />
+        <div className="logo-circle">🚀</div>
 
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+        <h1>Create Account</h1>
 
-      <br />
-      <br />
+        <p className="subtitle">
+          Join us by creating your account
+        </p>
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <div className="input-group">
 
-      <br />
-      <br />
+          <label>Full Name</label>
 
-      <button onClick={handleSignup}>
-        Signup
-      </button>
+          <input
+            type="text"
+            placeholder="John Doe"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
 
-      <br />
-      <br />
+        </div>
 
-      <p>
-        Already have an account?{" "}
-        <Link to="/login">Login</Link>
-      </p>
+        <div className="input-group">
+
+          <label>Email Address</label>
+
+          <input
+            type="email"
+            placeholder="example@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+        </div>
+
+        <div className="input-group">
+
+          <label>Password</label>
+
+          <div className="password-box">
+
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Create a password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <button
+              type="button"
+              className="eye-btn"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </button>
+
+          </div>
+
+        </div>
+
+        <button
+          className="auth-btn"
+          onClick={handleSignup}
+          disabled={loading}
+        >
+          {loading ? "Creating Account..." : "Create Account"}
+        </button>
+
+        <p className="bottom-text">
+          Already have an account?{" "}
+          <Link to="/login">Login</Link>
+        </p>
+
+      </div>
+
     </div>
   );
 }

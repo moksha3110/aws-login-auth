@@ -82,6 +82,8 @@ resource "aws_lambda_function" "signup" {
 
       JWT_SECRET = "change-this-later"
 
+      SECRET_NAME = aws_secretsmanager_secret.login_auth.name
+
     }
   }
 
@@ -124,17 +126,19 @@ resource "aws_lambda_function" "login" {
 
   environment {
 
-    variables = {
+  variables = {
 
-      DB_HOST     = aws_db_instance.mysql.address
-      DB_USER     = "admin"
-      DB_PASSWORD = var.db_password
-      DB_NAME     = "loginauth"
+    DB_HOST     = aws_db_instance.mysql.address
+    DB_USER     = "admin"
+    DB_PASSWORD = var.db_password
+    DB_NAME     = "loginauth"
 
-      JWT_SECRET = "change-this-later"
+    JWT_SECRET = "change-this-later"
 
-    }
+    SECRET_NAME = aws_secretsmanager_secret.login_auth.name
+
   }
+}
 
   depends_on = [
 

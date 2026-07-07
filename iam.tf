@@ -42,3 +42,26 @@ resource "aws_iam_instance_profile" "ec2_profile" {
   role = aws_iam_role.ec2_role.name
 
 }
+
+resource "aws_iam_role_policy" "lambda_secrets" {
+
+  name = "lambda-secrets-policy"
+
+  role = aws_iam_role.lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+
+    Statement = [
+      {
+        Effect = "Allow"
+
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+
+        Resource = aws_secretsmanager_secret.login_auth.arn
+      }
+    ]
+  })
+}

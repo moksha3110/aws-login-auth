@@ -7,9 +7,18 @@ function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   async function handleLogin() {
+    if (!email || !password) {
+      alert("Please fill all fields");
+      return;
+    }
+
     try {
+      setLoading(true);
+
       const res = await api.post("/login", {
         email,
         password,
@@ -22,44 +31,69 @@ function Login() {
       navigate("/dashboard");
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div>
-      <h1>Login</h1>
+    <div className="auth-container">
+      <div className="auth-card">
 
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+        <div className="logo-circle">🔐</div>
 
-      <br />
-      <br />
+        <h1>Welcome Back</h1>
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <p className="subtitle">
+          Sign in to continue to your account
+        </p>
 
-      <br />
-      <br />
+        <div className="input-group">
+          <label>Email Address</label>
 
-      <button onClick={handleLogin}>
-        Login
-      </button>
+          <input
+            type="email"
+            placeholder="example@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
 
-      <br />
-      <br />
+        <div className="input-group">
+          <label>Password</label>
 
-      <p>
-        Don't have an account?{" "}
-        <Link to="/signup">Signup</Link>
-      </p>
+          <div className="password-box">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <button
+              type="button"
+              className="eye-btn"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </button>
+          </div>
+        </div>
+
+        <button
+          className="auth-btn"
+          onClick={handleLogin}
+          disabled={loading}
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
+
+        <p className="bottom-text">
+          Don't have an account?{" "}
+          <Link to="/signup">Create one</Link>
+        </p>
+
+      </div>
     </div>
   );
 }
